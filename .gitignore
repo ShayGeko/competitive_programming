@@ -23,6 +23,10 @@
 *.a
 *.lib
 
+# Makefiles
+.cmake
+cmake-build-debug
+
 # Executables
 *.exe
 *.out
