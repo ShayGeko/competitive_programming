@@ -41,6 +41,7 @@ tempCodeRunnerFile.cpp
 
 # User-specific stuff:
 .idea
+.vscode
 
 # JIRA plugin
 atlassian-ide-plugin.xml
