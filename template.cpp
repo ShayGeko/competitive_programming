@@ -2,6 +2,9 @@
 
 using namespace std;
 
+typedef vector<int> vi;
+typedef vector<vector<int>> vvi;
+
 const int maxn = 1e5;
 const int INF = 1e9;
 
