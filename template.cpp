@@ -4,11 +4,13 @@ using namespace std;
 
 typedef vector<int> vi;
 typedef vector<vector<int>> vvi;
+typedef pair<int, int> pii;
 typedef long long ll;
+typedef vector<ll> vll;
 
 const int maxn = 1e5;
-const int INF = 1e9;
-
+const int INF = 2e9;
+const int p = 1e9+7;
 void solve(){
 
 }
