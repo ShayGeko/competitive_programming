@@ -8,6 +8,11 @@ typedef pair<int, int> pii;
 typedef long long ll;
 typedef vector<ll> vll;
 
+istream &operator >> (istream& is, pii &p){
+    cin >> p.first >> p.second;
+    return is;
+}
+
 const int maxn = 1e5;
 const int INF = 2e9;
 const int p = 1e9+7;
