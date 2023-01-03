@@ -5,11 +5,14 @@ using namespace std;
 #define pb push_back
 #define mp make_pair
 #define eb emplace_back
+#define pf push_front
 #define has(a, b) (a.find(b) != a.end())
 #define imin(a, b) a = min(a, b)
 #define imax(a, b) a = max(a, b)
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
+#define gpfront(x) (x).front();(x).pop_front()
+#define gpback(x) (x).back();(x).pop_back()
 
 #define rep(i, a, b) for(int i = a; i < (b); ++i)
 #define fora(i, n) for(int i = 0; i < n; i++)
@@ -28,13 +31,11 @@ typedef vector<pii> vpii;
 typedef vector<bool> vb;
 typedef vector<vb> vvb;
 
-template <class T>
-istream &operator >> (istream& is, pair<T, T> &p){
+istream &operator >> (istream& is, pii &p){
     is >> p.first >> p.second;
     return is;
 }
-template <class T>
-ostream &operator << (ostream& os, pair<T, T> &p){
+ostream &operator << (ostream& os, pii &p){
     os << p.first << " " << p.second;
     return os;
 }
@@ -64,8 +65,50 @@ const int maxn = 1e5;
 const int INF = 2e9;
 const int p = 1e9+7;
 
+vi nums;
 void solve(){
+    int num;
+    while(cin >> num){
+        nums.push_back(num);
+    }
+    // cout << sz(nums) << '\n';
 
+    deque<pii> moved;
+
+    int moved_cnt = 0;
+    fora(i, sz(nums)) moved.eb(i, nums[i]);
+    int n = sz(nums);
+
+    fora(i, n){
+        while(moved.front().first != i){
+            auto k = gpfront(moved);moved.pb(k);
+        }
+        const auto [ind, num] = moved.front();
+        
+    }
+
+    
+
+    int sum = 0;
+
+    int k = 0;
+    fora(i, sz(moved)){
+        if(moved[i].first == 0){
+            k = i;break;
+        }
+    }
+    // cout << k << '\n';
+    // cout << "-----------------\n";
+    for(int i = k+1000; i <= k+3000; i+=1000){
+        sum+=moved[i%n].first;
+        // cout << moved[i%n].first << '\n';
+    }
+
+    // for(auto t : moved){
+    //     cout << t.first << " ";
+    // }
+    // cout << '\n';
+    cout << sum << '\n';
 }
 
 int main(){

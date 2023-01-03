@@ -28,13 +28,11 @@ typedef vector<pii> vpii;
 typedef vector<bool> vb;
 typedef vector<vb> vvb;
 
-template <class T>
-istream &operator >> (istream& is, pair<T, T> &p){
+istream &operator >> (istream& is, pii &p){
     is >> p.first >> p.second;
     return is;
 }
-template <class T>
-ostream &operator << (ostream& os, pair<T, T> &p){
+ostream &operator << (ostream& os, pii &p){
     os << p.first << " " << p.second;
     return os;
 }
