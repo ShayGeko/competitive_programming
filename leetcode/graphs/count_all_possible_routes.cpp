@@ -8,27 +8,28 @@ public:
     int n;
     int countRoutes(vector<int>& locations, int start, int finish, int fuel) {
         n = locations.size();
-        vector<vector<int>> dp(n, vector<int>(fuel, -1));
-
+        vector<vector<int>> dp(n, vector<int>(fuel+1, -1));
+    
         return rec_count(dp, locations, start, fuel, finish);
     }
     int rec_count(vector<vector<int>> &dp, vector<int>& locations, int v, int fuel, int finish){
         if(dp[v][fuel] >= 0) return dp[v][fuel];
 
 
-        int ans = 0;
+        long long ans = 0;
         for(int i = 0; i < n; ++i){
             if(i == v) continue;
 
             int cost = abs(locations[v]-locations[i]);
             if(fuel - cost >= 0){
-                ans = (rec_count(dp, locations, i, fuel - cost, finish) + ans) % p;
+                ans += rec_count(dp, locations, i, fuel - cost, finish);
             }
         }
 
         if(v == finish){
-            ans = (ans + 1) % p;
+            ++ans;
         }
+        ans%=p;
         return dp[v][fuel] = ans;
     }
 };
