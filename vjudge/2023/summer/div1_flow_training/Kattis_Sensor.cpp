@@ -64,32 +64,54 @@ const int maxn = 1e5;
 const int INF = 2e9;
 const int p = 1e9+7;
 
-void solve(){
-    int n;
-    cin >> n;
-
-    int total = n * (n+1)/2;
-
-    if(total % 2) cout << "0\n";
-    else {
-        int goal = total/2;
-
-        vi dp(goal+1, 0);
-
-        // forcing 1 to be in all the sets that are added to answer
-        // to avoid overcounting
-        dp[1] = 1;
-
-        // starting from 2 for the same reason
-        for(int i = 2; i <= n; ++i) {
-            for(int w = goal-i; w >= 0; w--) {
-                // ugh forgot the modulo
-                if(dp[w])dp[w+i]=(dp[w+i]+dp[w])%p; 
-            }
-        }
-
-        cout << dp[goal] << '\n';
+struct Dinic {
+    struct Edge {
+        int to, rev;
+        ll c, oc;
+        ll flow() { return max(oc - c, 0LL); } // if you need flows
+    };
+    vi lvl, ptr, q;
+    vector<vector<Edge>> adj;
+    Dinic(int n) : lvl(n), ptr(n), q(n), adj(n) {}
+    void addEdge(int a, int b, ll c, ll rcap = 0) {
+        adj[a].push_back({b, sz(adj[b]), c, c});
+        adj[b].push_back({a, sz(adj[a]) - 1, rcap, rcap});
     }
+    void clear() {
+        for(auto &x : adj) x.clear();
+    }
+    ll dfs(int v, int t, ll f) {
+        if (v == t || !f) return f;
+        for (int& i = ptr[v]; i < sz(adj[v]); i++) {
+            Edge& e = adj[v][i];
+            if (lvl[e.to] == lvl[v] + 1)
+                if (ll p = dfs(e.to, t, min(f, e.c))) {
+                    e.c -= p, adj[e.to][e.rev].c += p;
+                    return p;
+                }
+        }
+        return 0;
+    }
+    ll calc(int s, int t) {
+        ll flow = 0; q[0] = s;
+        rep(L,0,31) do { // 'int L=30' maybe faster for random data
+                lvl = ptr = vi(sz(q));
+                int qi = 0, qe = lvl[s] = 1;
+                while (qi < qe && !lvl[t]) {
+                    int v = q[qi++];
+                    for (Edge e : adj[v])
+                        if (!lvl[e.to] && e.c >> (30 - L))
+                            q[qe++] = e.to, lvl[e.to] = lvl[v] + 1;
+                }
+                while (ll p = dfs(s, t, LLONG_MAX)) flow += p;
+            } while (lvl[t]);
+        return flow;
+    }
+    bool leftOfMinCut(int a) { return lvl[a] != 0; }
+};
+
+void solve(){
+
 }
 
 int main(){

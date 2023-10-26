@@ -65,31 +65,73 @@ const int INF = 2e9;
 const int p = 1e9+7;
 
 void solve(){
-    int n;
-    cin >> n;
+    string s;
+    cin >> s;
+    // 0. .0 . -> 0
 
-    int total = n * (n+1)/2;
+    if(s.length() > 1) {
+        int l = 0, r = sz(s)-1;
 
-    if(total % 2) cout << "0\n";
-    else {
-        int goal = total/2;
+        while(l < r && s[l]=='0') ++l;
 
-        vi dp(goal+1, 0);
-
-        // forcing 1 to be in all the sets that are added to answer
-        // to avoid overcounting
-        dp[1] = 1;
-
-        // starting from 2 for the same reason
-        for(int i = 2; i <= n; ++i) {
-            for(int w = goal-i; w >= 0; w--) {
-                // ugh forgot the modulo
-                if(dp[w])dp[w+i]=(dp[w+i]+dp[w])%p; 
-            }
+        if(s.find('.') != s.npos){
+            while(r>l && s[r]=='0')r--;
         }
 
-        cout << dp[goal] << '\n';
+        s= s.substr(l, r-l+1);
     }
+
+    
+    int dot = s.find('.');
+    if(dot == s.npos) dot=sz(s);
+    // .000abc
+    // abc.abc
+    // abc
+
+    if(dot || s.size()==1){ //
+        // abc.0abc
+        // abc
+        // abc.
+        // a0*.
+        // a
+        // .
+
+        // move to s[1];
+        int move = dot - 1;
+
+
+
+        s = s.substr(0, dot) + (dot < sz(s)-1? s.substr(dot+1):"");
+
+        
+        // 100 -> 1E2
+        int r = sz(s) - 1;
+        while(r > 0 && s[r]=='0')r--;
+        if(s.length() >= 1) {
+            cout << s[0];
+            if(r) {
+                cout <<  '.'; rep(i, 1, r+1) cout << s[i];
+            }
+
+            if(move)cout << "E"<<move<<'\n';
+            else cout << '\n';
+        }
+        // "."
+        else cout << "0\n";
+    } else {
+        //.abcd
+        int neg_exp = 1;
+        // there is atl 1 non-zero number after dot, otherwise would've been trimmed
+        while(s[neg_exp]=='0') neg_exp++;
+
+        cout << s[neg_exp];
+
+        if(s.size() - 1 - neg_exp) { // only print dot if there is something after
+            cout << '.'; rep(i, neg_exp+1, sz(s)) cout << s[i];
+        }
+        cout << "E-"<<neg_exp<<'\n';
+    }
+
 }
 
 int main(){

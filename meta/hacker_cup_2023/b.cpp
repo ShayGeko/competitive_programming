@@ -65,40 +65,21 @@ const int INF = 2e9;
 const int p = 1e9+7;
 
 void solve(){
-    int n;
-    cin >> n;
+    int r, c, a, b;
+    cin >> r >> c >> a >> b;
 
-    int total = n * (n+1)/2;
-
-    if(total % 2) cout << "0\n";
-    else {
-        int goal = total/2;
-
-        vi dp(goal+1, 0);
-
-        // forcing 1 to be in all the sets that are added to answer
-        // to avoid overcounting
-        dp[1] = 1;
-
-        // starting from 2 for the same reason
-        for(int i = 2; i <= n; ++i) {
-            for(int w = goal-i; w >= 0; w--) {
-                // ugh forgot the modulo
-                if(dp[w])dp[w+i]=(dp[w+i]+dp[w])%p; 
-            }
-        }
-
-        cout << dp[goal] << '\n';
-    }
+    if(r > c) cout << "YES\n";
+    else cout << "NO\n";
 }
 
 int main(){
     ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
     int t = 1;
 
-    // cin >> t;
+    cin >> t;
     
-    while(t--){
+    rep(i, 1, t+1){
+        cout << "Case #" << i << ": ";
         solve();
     }
     cout.flush();

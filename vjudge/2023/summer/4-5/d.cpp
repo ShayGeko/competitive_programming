@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+ #include <bits/stdc++.h>
 
 using namespace std;
 
@@ -8,7 +8,7 @@ using namespace std;
 #define has(a, b) (a.find(b) != a.end())
 #define imin(a, b) a = min(a, b)
 #define imax(a, b) a = max(a, b)
-#define all(x) begin(x), end(x)
+#define all(x) begin(x), end(x)1
 #define sz(x) (int)(x).size()
 
 #define rep(i, a, b) for(int i = a; i < (b); ++i)
