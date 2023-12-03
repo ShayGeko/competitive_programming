@@ -16,22 +16,16 @@ int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	int n;
 	vi nums;
-
 	int sum = 0;
-
 	vector<string> vals = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
 	while(true) {
 		getline(cin, str);
-		
 		if(str == "") break;
-
 		vi cc;
-
 		for(int i = 0; i < sz(str); ++i) {
 			char c = str[i];
 			if(c >= '0' && c <= '9') cc.push_back(c-'0');
-			else 
-			for(int j = 0; j < sz(vals); ++j) {
+			else for(int j = 0; j < sz(vals); ++j) {
 				string s = vals[j];
 				if(str.substr(i, sz(s)) == s) {
 					cc.push_back(j+1);
