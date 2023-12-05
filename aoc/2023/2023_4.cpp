@@ -35,59 +35,58 @@ void operator+= (pii&a, pii b){
 
 
 string str;
-int cnt = 0, a, b, x;
+ll cnt = 0, a, b, x;
 vi nums;
 vector<string> vstr;
 
 char c, _;
-ll ans = 0;
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	int n;
 	
-	string str;
-
-
-	map<string, int> comp = {
-		{"red", 12}, {"green", 13}, {"blue", 14}
-	};
-	int i = 1;
-	while(getline(cin, str)) {
-		if(str.size() < 2) cout << "|" << str << "|" << '\n';
-		if(str == "") break;
+	vector<set<int>> win;
+	vector<set<int>> has;
+	
+	int n = 199;
+	vi scards(n, 1);
+	int i = 0;
+	while(getline(cin, str)){
 		stringstream ss(str);
-		map<string, int> mp;
 
-		string col;
+		string word;
 		int num;
-		ss >> col >> num >> _;
-		while(ss >> num >> col ) {
-			if(col == "green" || col == "blue" || col == "red") {
-			} else {
-				col = col.substr(0, sz(col) - 1);
-			}
-			
-			mp[col] = max(mp[col], num);
+
+		ss >> word >> num >> _;
+
+
+
+		win.push_back({});
+		has.push_back({});
+
+
+		while(ss>>c && c != '|') {
+			ss.putback(c);
+			ss >> num;
+			win.back().insert(num);
 		}
 
-	 	bool flag = true;
-		int ans = 1;
-		for(auto [col1, num1] : comp) {
-			// if(mp[col1] > comp[col1]) {
-			// 	flag = false;
-			// 	break;
-			// }
-			ans *= mp[col];
-		} 
-		// if(flag) {
-		// 	cout << i << '\n';
-		// 	cnt += i;
-		// }
-		cnt +=ans;
-		
+		ll ans = 0;
+
+		while(ss >> num) {
+			has.back().insert(num);
+			if(win.back().count(num) >= 1) {
+				++ans;
+			}
+		}
+
+		rep(j, i+1, min((ll)n, i + ans + 1)) {
+			scards[j] += scards[i];
+		}
 		++i;
 	}
 
+	rep(i, 0, n) {
+		cnt += scards[i];
+	}
 	cout << cnt << '\n';
 	return 0;
 }

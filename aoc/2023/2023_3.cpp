@@ -39,55 +39,54 @@ int cnt = 0, a, b, x;
 vi nums;
 vector<string> vstr;
 
+map<string, int> mstr;
+
 char c, _;
-ll ans = 0;
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	int n;
-	
+
 	string str;
 
-
-	map<string, int> comp = {
-		{"red", 12}, {"green", 13}, {"blue", 14}
-	};
-	int i = 1;
 	while(getline(cin, str)) {
-		if(str.size() < 2) cout << "|" << str << "|" << '\n';
-		if(str == "") break;
-		stringstream ss(str);
-		map<string, int> mp;
+		vstr.push_back(str);
+	}
+	int n = vstr.size();
+	int m = vstr[0].size();
+	for(int i = 0; i < n; ++i) {
+		for(int j = 0; j < m; ++j) {
+			if((!isdigit(vstr[i][j])) && (vstr[i][j] != '.')) {
+				
+				int cnt1 = 0;
+				ll ans = 1;
+				for(int ii = i-1; ii <= i+1; ++ii) {
+					for(int jj = j-1; jj <= j+1; ++jj) {
+						if(!ii && !jj) continue;
 
-		string col;
-		int num;
-		ss >> col >> num >> _;
-		while(ss >> num >> col ) {
-			if(col == "green" || col == "blue" || col == "red") {
-			} else {
-				col = col.substr(0, sz(col) - 1);
-			}
-			
-			mp[col] = max(mp[col], num);
+						if(isdigit(vstr[ii][jj])) {
+							++cnt1;
+							int l = jj;
+							while(l-1 >= 0 && isdigit(vstr[ii][l-1])) --l;
+							int r = jj;
+							while(r+1 < m && isdigit(vstr[ii][r+1])) ++r;
+
+							string temp = vstr[ii].substr(l, r - l + 1);
+							// cnt += stoi(temp);
+							ans *= stoi(temp);
+							jj = r;
+						}
+					}
+				}
+
+
+				if(cnt1 == 2) {
+					cnt += ans;
+				}
+
+			} 
 		}
-
-	 	bool flag = true;
-		int ans = 1;
-		for(auto [col1, num1] : comp) {
-			// if(mp[col1] > comp[col1]) {
-			// 	flag = false;
-			// 	break;
-			// }
-			ans *= mp[col];
-		} 
-		// if(flag) {
-		// 	cout << i << '\n';
-		// 	cnt += i;
-		// }
-		cnt +=ans;
-		
-		++i;
 	}
 
 	cout << cnt << '\n';
+
 	return 0;
 }
