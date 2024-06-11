@@ -1,0 +1,1 @@
+\\wsl.localhost\Ubuntu-22.04\home\shaygeko\compprog\competitive_programming\meta\hacker_cup_2023\R1

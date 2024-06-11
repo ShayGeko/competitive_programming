@@ -9,47 +9,62 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 // for stree [A -> B] : (#nodes, sum_tax, sum_dist, sum_wdist)
-unordered_map<pii, tuple<int, int, ll, ll>> info;
+map<pii, tuple<int, int, ll, ll>> info;
+vector<tuple<int, int, ll, ll>> sum_info;
+vector<int> dummy_count;
 
 vector<vector<pii>> adj;
 vi tax;
-void compute(int u, int v) {
-	int edge_cost;
+tuple<int, int, ll, ll> compute(int u, int v, int edge_cost) {
 
-	int snodes = 0, stax = 0;
-	ll sum_dist = 0, sum_wdist = 0;
-	for(auto [to, toll] : adj[v]) {
-		if(to == u) edge_cost=toll;
-		else {
-			if(!info.count({v, to})) {
-				compute(v, to);
+	auto &[snodes, stax, sum_dist, sum_wdist] 
+		= sum_info[v];
+	
+	// dummy count is >1 -> 1 -> 0, as we dont compute back edge the first time
+	if(dummy_count[v] > 0) {
+		for(auto [to, toll] : adj[v]) {
+			if(to != u) { // skip backedge
+				if(!info.count({v, to})) {
+					auto [nodes, tax, dist, wdist] = 
+						compute(v, to, toll);
+					snodes += nodes;
+					stax += tax;
+					sum_dist += dist;
+					sum_wdist += wdist;
+					dummy_count[v]--;
+				}
 			}
-			auto [nodes, tax, dist, wdist] 
-				= info[{v, to}];
-			snodes += nodes;
-			stax += tax;
-			sum_dist += dist;
-			sum_wdist += wdist;
 		}
 	}
+
+	auto [n, t, sd, swd] = sum_info[v];
+	auto [bnodes, btax, bdist, bwdist] = info[{v, u}];
+	// remove backedge:
+	n -= bnodes;
+	t -= btax;
+	sd -= bdist;
+	swd -= bwdist;
+
 	// add current node
-	++snodes;
-	stax += tax[v];
+	++n;
+	t += tax[v];
 	// shift costs by edge [v, u];
-	sum_dist += edge_cost * snodes;
-	sum_wdist += edge_cost * stax;
+	sd += edge_cost * n;
+	swd += edge_cost * t;
 
-	info[{u,v}] = {snodes, stax, sum_dist, sum_wdist};
+	info[{u,v}] = {n, t, sd, swd};
+	return {n,t,sd,swd};
 }
-ll getCost(int u) {
+ll getCost(int u, int p = -1) {
 	ll cost = 0;
-
+	// sum the cost from all subtrees if rooted at u
 	for (auto [v, toll] : adj[u]) {
-		if(!info.count({u,v})) compute(u, v);
+		// compute cost if not computed
+		if(!info.count({u,v})) compute(u, v, toll);
 
-		auto [_, sum_tax, sum_dist, sum_wdist]
-			= info[{u, v}];
-		cost += tax[u] * sum_dist + sum_wdist;
+		// add cost from subtree
+		auto [nodes, stax, sdist, sum_wdist] = info[{u,v}];
+		cost += tax[u] * sdist + sum_wdist;
 	}
 
 	return cost;
@@ -71,6 +86,10 @@ int main() {
 		adj[a].emplace_back(b, c);
 		adj[b].emplace_back(a, c);
 	}
+	
+	dummy_count.resize(n);
+	sum_info.resize(n, {0,0,0,0});
+	rep(i, 0, n) dummy_count[i] = sz(adj[i]);
 
 	vector<ll> costs(n);
 	rep(i, 0, n) costs[i] = getCost(i);

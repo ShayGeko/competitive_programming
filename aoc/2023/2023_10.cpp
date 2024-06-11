@@ -135,6 +135,42 @@ void p1() {
 	}
 	cout << ans<< '\n';
 }
+template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
+template<class T>
+struct Point {
+	typedef Point P;
+	T x, y;
+	explicit Point(T x=0, T y=0) : x(x), y(y) {}
+	bool operator<(P p) const { return tie(x,y) < tie(p.x,p.y); }
+	bool operator==(P p) const { return tie(x,y)==tie(p.x,p.y); }
+	P operator+(P p) const { return P(x+p.x, y+p.y); }
+	P operator-(P p) const { return P(x-p.x, y-p.y); }
+	P operator*(T d) const { return P(x*d, y*d); }
+	P operator/(T d) const { return P(x/d, y/d); }
+	T dot(P p) const { return x*p.x + y*p.y; }
+	T cross(P p) const { return x*p.y - y*p.x; }
+	T cross(P a, P b) const { return (a-*this).cross(b-*this); }
+	T dist2() const { return x*x + y*y; }
+	double dist() const { return sqrt((double)dist2()); }
+	// angle to x-axis in interval [-pi, pi]
+	double angle() const { return atan2(y, x); }
+	P unit() const { return *this/dist(); } // makes dist()=1
+	P perp() const { return P(-y, x); } // rotates +90 degrees
+	P normal() const { return perp().unit(); }
+	// returns point rotated 'a' radians ccw around the origin
+	P rotate(double a) const {
+		return P(x*cos(a)-y*sin(a),x*sin(a)+y*cos(a)); }
+	friend ostream& operator<<(ostream& os, P p) {
+		return os << "(" << p.x << "," << p.y << ")"; }
+};
+template<class T>
+T polygonArea2(vector<Point<T>>& v) {
+	T a = v.back().cross(v[0]);
+	rep(i,0,sz(v)-1) a += v[i].cross(v[i+1]);
+	return a;
+}
+
+
 void p2() {
 	vector<string> grid;
 
@@ -214,9 +250,8 @@ void p2() {
 	
 
 	vector<vector<bool>> isLoop(sz(grid), vector<bool>(sz(grid[0]), false));
-	
+	vector<Point<int>> polygon;
 	q.push({node, parent[node]});
-	q.push({parent[node], node});
 	while(!q.empty()) {
 		auto [cur, from] = q.front();q.pop();
 		auto [ci, cj] = cur;
@@ -246,14 +281,22 @@ void p2() {
 	queue<pii> qq;
 	vector<vector<bool>> vis(sz(grid), vector<bool>(sz(grid[0]), false));
 
-	qq.push({0,0});
-	vis[0][0]=true;
+	int n = sz(grid), m = sz(grid[0]);
+	vi temp = {0, n-1, m-1};
+	rep(i, 0, n) rep(j, 0, m) for(auto x : temp) if(i == x || j == x) {
+		if(!isLoop[i][j]) {
+			qq.push({i, j});
+			vis[i][j]=true;
+		}
+	}
 	while(!qq.empty()){
 		auto [ci, cj] = qq.front();qq.pop();
-		for(auto [di, dj] : moves) {
+
+		rep(di, -1, 2) rep(dj, -1, 2) {
+			if(di == 0 && dj == 0) continue;
 			auto [ni, nj] = pii(ci+di, cj+dj);
 
-			if(ni >= 0 && ni < sz(grid) && nj >= 0 && nj <= grid[0].size()) {
+			if(ni >= 0 && ni < n && nj >= 0 && nj < m) {
 				if(!vis[ni][nj] && !isLoop[ni][nj]){
 					qq.push({ni, nj});
 					vis[ni][nj] = true;
